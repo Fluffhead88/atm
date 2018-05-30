@@ -10,20 +10,19 @@ import records
 
 db = records.Database("postgres://localhost/atm")
 
-db.query("DROP TABLE IF EXISTS contacts;")
+db.query("DROP TABLE IF EXISTS bank;")
 
 create_query = """
-CREATE TABLE atm (
+CREATE TABLE bank (
     id SERIAL PRIMARY KEY,
-    balance VARCHAR(15),
-    transaction VARCHAR(15),
-    new_balance VARCHAR(15)
+    balance NUMERIC(15),
+    amount NUMERIC(15)
 );
 """
 
 db.query(create_query)
 
 insert_query = """
-INSERT INTO atm (balance, transaction, new_balance) VALUES ('1,000,000', '', '');
+INSERT INTO bank (balance, amount) VALUES (100, 0);
 """
 db.query(insert_query)
