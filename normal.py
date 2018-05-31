@@ -13,11 +13,11 @@ def make_transaction(db, amount):
     return db.query(sql, amount=amount)
 
 def make_balance(db, balance):
-    sql = "INSERT INTO bank (balance) VALUES (:balance);"
+    sql = "INSERT INTO bank SUM(amount + balance) AS balance;"
     return db.query(sql, balance=balance)
 
 def find_balance(db):
-    sql = "INSERT INTO bank SUM(amount + balance) AS balance;"
+    sql = "SELECT balance FROM bank;"
     return db.query(sql)
 
 
@@ -43,7 +43,7 @@ def ui_make_withdraw(db):
     withdraw = input("How much would you like to withdraw? > ")
     withdraw = abs(int(withdraw)) * -1
     make_transaction(db, withdraw)
-    make_balance(db, withdraw)
+    make_balance(db, amount)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
@@ -53,7 +53,7 @@ def ui_make_deposit(db):
     deposit = input("How much would you like to deposit? > ")
     deposit = int(deposit)
     make_transaction(db, deposit)
-    make_balance(db, deposit)
+    make_balance(db, amount)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
