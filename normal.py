@@ -12,34 +12,13 @@ def make_transaction(db, amount):
     sql = "INSERT INTO bank (amount) VALUES (:amount);"
     return db.query(sql, amount=amount)
 
-def make_withdrawl(db):
-    amount = input("How much would you like to withdraw? > ")
-    amount = abs(int(amount)) * -1
-    make_transaction(db, amount)
-    return amount
+def make_balance(db, balance):
+    sql = "INSERT INTO bank (balance) VALUES (:balance);"
+    return db.query(sql, balance=balance)
 
-def make_deposit(db):
-    amount = input("How much would you like to deposit? > ")
-    amount = int(amount)
-    make_transaction(db, amount)
-    return amount
-
-
-def find_balance(db, balance):
-    sql = "SELECT SUM(amount + balance) from bank;"
-    return db.query(sql, balance=sum)
-
-
-
-
-def display_balance(bank):
-    print(f"Your balance is ${bank.balance}")
-
-def display_deposit(bank):
-    print(f"You deposited ${bank} into your account.")
-
-def display_withdrawl(bank):
-    print(f"You withdrew ${bank} out of your account.")
+def find_balance(db):
+    sql = "INSERT INTO bank SUM(amount + balance) AS balance;"
+    return db.query(sql)
 
 
 def main_menu():
@@ -51,26 +30,30 @@ def main_menu():
     return choice
 
 
-def ui_find_balance(db, balance):
-    balances = find_balance(db, balance)
+def ui_find_balance(db):
+    balances = find_balance(db)
     for balance in balances:
-        display_balance(balance)
+        print(f"Your balance is ${bank.balance}")
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
         pass
 
-def ui_make_withdrawl(db):
-    withdrawl = make_withdrawl(db)
-    display_withdrawl(withdrawl)
+def ui_make_withdraw(db):
+    withdraw = input("How much would you like to withdraw? > ")
+    withdraw = abs(int(withdraw)) * -1
+    make_transaction(db, withdraw)
+    make_balance(db, withdraw)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
         pass
 
 def ui_make_deposit(db):
-    deposit = make_deposit(db)
-    display_deposit(deposit)
+    deposit = input("How much would you like to deposit? > ")
+    deposit = int(deposit)
+    make_transaction(db, deposit)
+    make_balance(db, deposit)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
@@ -78,11 +61,10 @@ def ui_make_deposit(db):
 
 while True:
     my_choice = main_menu()
-
     if my_choice == "1":
-        ui_find_balance(db, balance)
+        ui_find_balance(db)
     elif my_choice == "2":
-        ui_make_withdrawl(db)
+        ui_make_withdraw(db)
     elif my_choice == "3":
         ui_make_deposit(db)
     elif my_choice == "4":
