@@ -4,20 +4,22 @@
 # Develop my interaction with the database
 # /// refactor database intercation to use an object
 
+# use 1 column
+
 import records
 
 db = records.Database("postgres://localhost/atm")
 
-def make_transaction(db, amount):
-    sql = "INSERT INTO bank (amount) VALUES (:amount);"
-    return db.query(sql, amount=amount)
+#def make_transaction(db, balance):
+#    sql = "INSERT INTO bank (balance) VALUES (:balance);"
+#    return db.query(sql, balance=balance)
 
 def make_balance(db, balance):
-    sql = "INSERT INTO bank SUM(amount + balance) AS balance;"
-    return db.query(sql, balance=balance)
+    sql = "INSERT INTO bank (balance) VALUES (:balance);"
+    return db.query(sql, balance = balance)
 
 def find_balance(db):
-    sql = "SELECT balance FROM bank;"
+    sql = "SELECT SUM(balance) FROM bank;"
     return db.query(sql)
 
 
@@ -33,7 +35,10 @@ def main_menu():
 def ui_find_balance(db):
     balances = find_balance(db)
     for balance in balances:
-        print(f"Your balance is ${bank.balance}")
+        print(f"Your balance is ${balance.sum}")
+        if balance.sum < 0:
+            print("Your account is overdrafted")
+            exit()
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
@@ -42,8 +47,7 @@ def ui_find_balance(db):
 def ui_make_withdraw(db):
     withdraw = input("How much would you like to withdraw? > ")
     withdraw = abs(int(withdraw)) * -1
-    make_transaction(db, withdraw)
-    make_balance(db, amount)
+    make_balance(db, withdraw)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":
@@ -52,8 +56,7 @@ def ui_make_withdraw(db):
 def ui_make_deposit(db):
     deposit = input("How much would you like to deposit? > ")
     deposit = int(deposit)
-    make_transaction(db, deposit)
-    make_balance(db, amount)
+    make_balance(db, deposit)
     print("Press <Enter> to go back to Main Menu")
     update_choice = input("> ")
     if update_choice == "":

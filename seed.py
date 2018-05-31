@@ -15,14 +15,13 @@ db.query("DROP TABLE IF EXISTS bank;")
 create_query = """
 CREATE TABLE bank (
     id SERIAL PRIMARY KEY,
-    balance NUMERIC(15),
-    amount NUMERIC(15)
+    balance NUMERIC(15)
 );
 """
 
 db.query(create_query)
 
 insert_query = """
-INSERT INTO bank (balance, amount) VALUES (100, 0);
+INSERT INTO bank (balance) VALUES (100);
 """
 db.query(insert_query)
