@@ -8,10 +8,6 @@ import records
 
 db = records.Database("postgres://localhost/atm")
 
-def find_balance(db):
-    sql = "SELECT balance FROM bank;"
-    return db.query(sql)
-
 def make_transaction(db, amount):
     sql = "INSERT INTO bank (amount) VALUES (:amount);"
     return db.query(sql, amount=amount)
@@ -27,6 +23,12 @@ def make_deposit(db):
     amount = int(amount)
     make_transaction(db, amount)
     return amount
+
+
+def find_balance(db, balance):
+    sql = "SELECT SUM(amount + balance) from bank;"
+    return db.query(sql, balance=sum)
+
 
 
 
@@ -49,8 +51,8 @@ def main_menu():
     return choice
 
 
-def ui_find_balance(db):
-    balances = find_balance(db)
+def ui_find_balance(db, balance):
+    balances = find_balance(db, balance)
     for balance in balances:
         display_balance(balance)
     print("Press <Enter> to go back to Main Menu")
@@ -78,7 +80,7 @@ while True:
     my_choice = main_menu()
 
     if my_choice == "1":
-        ui_find_balance(db)
+        ui_find_balance(db, balance)
     elif my_choice == "2":
         ui_make_withdrawl(db)
     elif my_choice == "3":
